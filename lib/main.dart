@@ -7,14 +7,15 @@ void main() {
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blueGrey,
         appBar: AppBar(
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.blueGrey,
           title: Text('Dice'),
         ),
         body: DiceApp(),
       )));
 }
+
 
 class DiceApp extends StatefulWidget {
 
@@ -22,9 +23,26 @@ class DiceApp extends StatefulWidget {
   _DiceAppState createState() => _DiceAppState();
 }
 
-class _DiceAppState extends State<DiceApp> {
+class _DiceAppState extends State<DiceApp> with TickerProviderStateMixin{
+
   int leftdicenumber = 3;
   int rightdicenumber = 3;
+  AnimationController _anglecontroller;
+  var _angle = 0.0;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _anglecontroller = AnimationController(vsync: this,duration: Duration(milliseconds: 250));
+    _anglecontroller.addListener(() {
+      setState(() {
+        _angle = _anglecontroller.value *  45/360 * 2 * pi * 4;
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +59,13 @@ class _DiceAppState extends State<DiceApp> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.asset("assets/images/dice$leftdicenumber.png"),
+                    child: Transform.rotate(angle: _angle ,child: Image.asset("assets/images/dice$leftdicenumber.png")),
                   ),
                 ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.asset("assets/images/dice$rightdicenumber.png"),
+                    child: Transform.rotate(angle: _angle ,child: Image.asset("assets/images/dice$rightdicenumber.png")),
                   ),
                 ),
               ],
@@ -57,6 +75,7 @@ class _DiceAppState extends State<DiceApp> {
             setState(() {
               leftdicenumber = Random().nextInt(6)+1;
               rightdicenumber = Random().nextInt(6)+1;
+              _rotatedice();
             });
           } , child:  Text("PRESS",style: TextStyle(fontSize: 20),),
             borderSide: BorderSide(color: Colors.white,width: 2),
@@ -66,5 +85,16 @@ class _DiceAppState extends State<DiceApp> {
         ],
       ),
     );
+  }
+
+  void _rotatedice() {
+      if(_anglecontroller.status == AnimationStatus.completed)
+      {
+        _anglecontroller.reverse();
+      }
+      else if (_anglecontroller.status == AnimationStatus.dismissed)
+      {
+        _anglecontroller.forward();
+      }
   }
 }
