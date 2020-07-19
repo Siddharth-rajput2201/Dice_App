@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -14,9 +16,16 @@ void main() {
       )));
 }
 
-class DiceApp extends StatelessWidget {
+class DiceApp extends StatefulWidget {
 
+  @override
+  _DiceAppState createState() => _DiceAppState();
+}
+
+class _DiceAppState extends State<DiceApp> {
   int leftdicenumber = 3;
+  int rightdicenumber = 3;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,13 +47,18 @@ class DiceApp extends StatelessWidget {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image.asset("assets/images/dice$leftdicenumber.png"),
+                    child: Image.asset("assets/images/dice$rightdicenumber.png"),
                   ),
                 ),
               ],
             ),
           ),
-          OutlineButton(onPressed: (){} , child:  Text("PRESS",style: TextStyle(fontSize: 20),),
+          OutlineButton(onPressed: (){
+            setState(() {
+              leftdicenumber = Random().nextInt(6)+1;
+              rightdicenumber = Random().nextInt(6)+1;
+            });
+          } , child:  Text("PRESS",style: TextStyle(fontSize: 20),),
             borderSide: BorderSide(color: Colors.white,width: 2),
             color: Colors.white,
             textColor: Colors.white,
